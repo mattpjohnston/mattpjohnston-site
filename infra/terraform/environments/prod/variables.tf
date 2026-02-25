@@ -39,9 +39,39 @@ variable "price_class" {
   default     = "PriceClass_100"
 }
 
+variable "enable_backend" {
+  type        = bool
+  description = "Enable visitor counter backend resources"
+  default     = false
+}
+
+variable "backend_allowed_origins" {
+  type        = list(string)
+  description = "Allowed CORS origins for counter API"
+  default     = []
+}
+
+variable "backend_seen_ttl_seconds" {
+  type        = number
+  description = "TTL in seconds for daily seen fingerprints"
+  default     = 172800
+}
+
+variable "backend_apigw_throttling_burst_limit" {
+  type        = number
+  description = "API Gateway burst limit for counter endpoint"
+  default     = 10
+}
+
+variable "backend_apigw_throttling_rate_limit" {
+  type        = number
+  description = "API Gateway steady-state rate limit for counter endpoint"
+  default     = 5
+}
+
 variable "enable_frontend_ci_role" {
   type        = bool
-  description = "Create GitHub Actions deploy role"
+  description = "Create GitHub Actions deploy role for frontend and backend workflows"
   default     = true
 }
 

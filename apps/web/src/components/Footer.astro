@@ -2,10 +2,15 @@
 import GitHubIcon from "./icons/GitHubIcon.astro";
 import LinkedInIcon from "./icons/LinkedInIcon.astro";
 import MailIcon from "./icons/MailIcon.astro";
+import VisitorCounter from "./VisitorCounter.svelte";
 ---
 
 <footer class="ui-footer-shell relative z-10 border-t">
   <nav aria-label="Footer" class="mx-auto flex w-full max-w-5xl items-center justify-center gap-5 px-4 py-7 md:px-6">
+    <VisitorCounter client:load />
+
+    <span aria-hidden="true" class="ui-divider h-4 w-px"></span>
+
     <a
       href="/contact/"
       class="ui-inline-action ui-text-muted inline-flex items-center gap-2 text-sm hover:text-indigo-300"

@@ -95,23 +95,21 @@
     enablePointerTracking();
   };
 
-  const bindMediaChange = (query: MediaQueryList, handler: () => void) => {
-    if ("addEventListener" in query) {
-      query.addEventListener("change", handler);
-    } else {
-      query.addListener(handler);
-    }
+  const bindMediaChange = (
+    query: MediaQueryList,
+    handler: (event: MediaQueryListEvent) => void,
+  ) => {
+    query.addEventListener("change", handler);
   };
 
-  const unbindMediaChange = (query: MediaQueryList, handler: () => void) => {
-    if ("removeEventListener" in query) {
-      query.removeEventListener("change", handler);
-    } else {
-      query.removeListener(handler);
-    }
+  const unbindMediaChange = (
+    query: MediaQueryList,
+    handler: (event: MediaQueryListEvent) => void,
+  ) => {
+    query.removeEventListener("change", handler);
   };
 
-  let handleMediaChange: (() => void) | undefined;
+  let handleMediaChange: ((event: MediaQueryListEvent) => void) | undefined;
   let handleResize: (() => void) | undefined;
 
   onMount(() => {

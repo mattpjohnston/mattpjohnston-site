@@ -85,6 +85,18 @@ data "aws_iam_policy_document" "github_actions_frontend" {
       "arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/${module.frontend.distribution_id}"
     ]
   }
+
+  statement {
+    actions = [
+      "lambda:GetFunction",
+      "lambda:GetFunctionConfiguration",
+      "lambda:UpdateFunctionCode",
+    ]
+
+    resources = [
+      "arn:aws:lambda:${var.region}:${data.aws_caller_identity.current.account_id}:function:${var.project_name}-visitor-counter"
+    ]
+  }
 }
 
 resource "aws_iam_policy" "github_actions_frontend" {
