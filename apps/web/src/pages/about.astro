@@ -1,0 +1,14 @@
+---
+import AboutProfileSection from "../components/about/AboutProfileSection.astro";
+import AboutSkillsGrid from "../components/about/AboutSkillsGrid.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const pageTitle = "About";
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <div class="mx-auto max-w-5xl">
+    <AboutProfileSection />
+    <AboutSkillsGrid />
+  </div>
+</BaseLayout>

@@ -1,0 +1,54 @@
+---
+import MailIcon from "../icons/MailIcon.astro";
+
+const cardClass = "ui-surface-gradient rounded-2xl p-6";
+---
+
+<section aria-label="Contact details" class="space-y-6">
+  <article class={cardClass}>
+    <div class="flex items-center gap-4">
+      <span
+        aria-hidden="true"
+        class="ui-icon-badge inline-flex h-11 w-11 items-center justify-center rounded-full"
+      >
+        <MailIcon class="h-5 w-5" />
+      </span>
+      <div>
+        <h2 class="text-2xl font-semibold text-white">Email</h2>
+        <a
+          href="mailto:matthewjohnston134@gmail.com"
+          class="ui-inline-action mt-1 block text-lg text-slate-400 hover:text-indigo-300"
+        >
+          matthewjohnston134@gmail.com
+        </a>
+      </div>
+    </div>
+  </article>
+
+  <article class={cardClass}>
+    <div class="flex items-center gap-4">
+      <span
+        aria-hidden="true"
+        class="ui-icon-badge inline-flex h-11 w-11 items-center justify-center rounded-full"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="h-5 w-5"
+        >
+          <path d="M12 22s7-4.35 7-10a7 7 0 1 0-14 0c0 5.65 7 10 7 10z"></path>
+          <circle cx="12" cy="12" r="2.5"></circle>
+        </svg>
+      </span>
+      <div>
+        <h2 class="text-2xl font-semibold text-white">Location</h2>
+        <p class="mt-1 text-lg text-slate-400">Belfast / Remote</p>
+      </div>
+    </div>
+  </article>
+</section>

@@ -1,0 +1,61 @@
+---
+import type { CollectionEntry } from "astro:content";
+import ExternalLinkIcon from "../icons/ExternalLinkIcon.astro";
+import GitHubIcon from "../icons/GitHubIcon.astro";
+
+interface Props {
+  project: CollectionEntry<"projects">;
+}
+
+const { project } = Astro.props as Props;
+
+const cardClass = "ui-surface-gradient h-full rounded-2xl p-7 md:p-8";
+const iconLinkClass =
+  "ui-icon-action inline-flex h-7 w-7 items-center justify-center rounded-md border border-transparent hover:text-indigo-300";
+---
+
+<article class={cardClass}>
+  <div class="mb-7 flex items-start justify-end">
+    <div class="ui-text-subtle flex items-center gap-3">
+      {
+        project.data.repoUrl && (
+          <a
+            href={project.data.repoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`View ${project.data.title} source code`}
+            class={iconLinkClass}
+          >
+            <GitHubIcon class="h-4 w-4" />
+          </a>
+        )
+      }
+      {
+        project.data.liveUrl && (
+          <a
+            href={project.data.liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`Open ${project.data.title} live demo`}
+            class={iconLinkClass}
+          >
+            <ExternalLinkIcon class="h-4 w-4" />
+          </a>
+        )
+      }
+    </div>
+  </div>
+
+  <h2 class="text-3xl font-semibold leading-tight tracking-tight text-white md:text-4xl">{project.data.title}</h2>
+  <p class="mt-4 max-w-[34ch] text-lg leading-relaxed text-slate-400 md:text-xl">{project.data.summary}</p>
+
+  <ul class="mt-6 flex flex-wrap gap-2 font-mono">
+    {
+      project.data.stack.map((tag: string) => (
+        <li class="tech-tag ui-chip-muted rounded-full border border-(--color-border-chip) bg-(--color-bg-card) px-3 py-1 text-sm text-slate-300">
+          {tag}
+        </li>
+      ))
+    }
+  </ul>
+</article>

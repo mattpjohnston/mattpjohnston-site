@@ -1,0 +1,22 @@
+---
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import MarkdownPostLayout from "../../layouts/MarkdownPostLayout.astro";
+
+export async function getStaticPaths() {
+  const posts: CollectionEntry<"blog">[] = await getCollection("blog");
+  return posts.map((post: CollectionEntry<"blog">) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props as { post: CollectionEntry<"blog"> };
+const { Content } = await render(post);
+const postBody = post.body ?? "";
+const wordCount = postBody.trim().split(/\s+/).filter(Boolean).length;
+const readingTimeMinutes = Math.max(1, Math.ceil(wordCount / 220));
+---
+
+<MarkdownPostLayout frontmatter={post.data} readingTimeMinutes={readingTimeMinutes}>
+  <Content />
+</MarkdownPostLayout>

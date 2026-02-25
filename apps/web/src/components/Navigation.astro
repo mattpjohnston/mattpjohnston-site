@@ -1,0 +1,237 @@
+---
+import GitHubIcon from "./icons/GitHubIcon.astro";
+import LinkedInIcon from "./icons/LinkedInIcon.astro";
+
+const navLinks = [
+  { name: "About", path: "/about/" },
+  { name: "Projects", path: "/projects/" },
+  // { name: "Blog", path: "/blog/" },
+  { name: "Contact", path: "/contact/" },
+];
+
+const normalizePath = (path: string) => {
+  if (path === "/") {
+    return path;
+  }
+  return path.endsWith("/") ? path.slice(0, -1) : path;
+};
+
+const currentPath = normalizePath(Astro.url.pathname);
+const isActivePath = (targetPath: string) => {
+  const normalizedTarget = normalizePath(targetPath);
+  if (normalizedTarget === "/") {
+    return currentPath === "/";
+  }
+  return currentPath === normalizedTarget || currentPath.startsWith(`${normalizedTarget}/`);
+};
+
+const socialLinkClass =
+  "ui-icon-action ui-text-muted inline-flex h-8 w-8 items-center justify-center rounded-md border border-transparent hover:text-indigo-300";
+---
+
+<nav aria-label="Primary" class="flex items-center gap-4">
+  <div class="relative md:hidden" data-mobile-nav>
+    <button
+      type="button"
+      aria-label="Toggle navigation menu"
+      aria-controls="mobile-nav-panel"
+      aria-expanded="false"
+      data-mobile-menu-toggle
+      class="ui-mobile-toggle ui-text-muted inline-flex h-9 w-9 cursor-pointer items-center justify-center rounded-md border transition-colors hover:text-indigo-300"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="h-5 w-5"
+        aria-hidden="true"
+      >
+        <path d="M4 7h16"></path>
+        <path d="M4 12h16"></path>
+        <path d="M4 17h16"></path>
+      </svg>
+      <span class="sr-only">Menu</span>
+    </button>
+
+    <div
+      id="mobile-nav-panel"
+      data-mobile-nav-panel
+      hidden
+      class="ui-mobile-panel-shell mobile-nav-panel fixed inset-x-0 top-16 z-50 border-b"
+    >
+      <div class="mx-auto w-full max-w-5xl px-4 py-4">
+        <ul class="flex flex-col gap-1">
+          {
+            navLinks.map((link) => (
+              <li>
+                <a
+                  href={link.path}
+                  aria-current={isActivePath(link.path) ? "page" : undefined}
+                  class:list={[
+                    "block rounded-md px-3 py-2 transition-colors",
+                    isActivePath(link.path)
+                      ? "ui-active-link"
+                      : "ui-text-muted ui-hover-bg-soft hover:text-indigo-300",
+                  ]}
+                >
+                  {link.name}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+
+        <ul aria-label="Social links" class="mt-4 flex items-center gap-2 border-t border-(--color-border-soft) pt-4">
+          <li>
+            <a
+              href="https://github.com/mattpjohnston"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="GitHub"
+              class={socialLinkClass}
+            >
+              <GitHubIcon class="h-5 w-5" />
+            </a>
+          </li>
+
+          <li>
+            <a
+              href="https://linkedin.com/in/mattpjohnston"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn"
+              class={socialLinkClass}
+            >
+              <LinkedInIcon class="h-5 w-5" />
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <ul class="hidden items-center gap-7  md:flex">
+    {
+      navLinks.map((link) => (
+        <li>
+          <a
+            href={link.path}
+            aria-current={isActivePath(link.path) ? "page" : undefined}
+            class:list={[
+              "transition-colors",
+              isActivePath(link.path)
+                ? "ui-active-link-text"
+                : "ui-text-muted hover:text-indigo-300",
+            ]}
+          >
+            {link.name}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div aria-hidden="true" class="ui-divider hidden h-4 w-px md:block"></div>
+
+  <ul aria-label="Social links" class="hidden items-center gap-2 md:flex">
+    <li>
+      <a
+        href="https://github.com/mattpjohnston"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="GitHub"
+        class={socialLinkClass}
+      >
+        <GitHubIcon class="h-5 w-5" />
+      </a>
+    </li>
+
+    <li>
+      <a
+        href="https://linkedin.com/in/mattpjohnston"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="LinkedIn"
+        class={socialLinkClass}
+      >
+        <LinkedInIcon class="h-5 w-5" />
+      </a>
+    </li>
+  </ul>
+</nav>
+
+<script>
+  const initMobileNav = () => {
+    const root = document.querySelector("[data-mobile-nav]");
+    if (!(root instanceof HTMLElement)) return;
+
+    const toggle = root.querySelector("[data-mobile-menu-toggle]");
+    const panel = root.querySelector("[data-mobile-nav-panel]");
+    if (!(toggle instanceof HTMLButtonElement) || !(panel instanceof HTMLElement)) return;
+    if (toggle.dataset.ready === "true") return;
+    toggle.dataset.ready = "true";
+
+    const closePanel = () => {
+      if (panel.hidden) return;
+      panel.classList.remove("is-open");
+      toggle.setAttribute("aria-expanded", "false");
+
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        panel.hidden = true;
+        return;
+      }
+
+      const hidePanel = () => {
+        panel.hidden = true;
+      };
+
+      const onTransitionEnd = (event: TransitionEvent) => {
+        if (event.target !== panel || event.propertyName !== "opacity") return;
+        panel.removeEventListener("transitionend", onTransitionEnd);
+        hidePanel();
+      };
+
+      panel.addEventListener("transitionend", onTransitionEnd);
+      window.setTimeout(() => {
+        panel.removeEventListener("transitionend", onTransitionEnd);
+        hidePanel();
+      }, 260);
+    };
+
+    const openPanel = () => {
+      if (!panel.hidden) return;
+      panel.hidden = false;
+      panel.classList.remove("is-open");
+      void panel.getBoundingClientRect();
+      panel.classList.add("is-open");
+      toggle.setAttribute("aria-expanded", "true");
+    };
+
+    toggle.addEventListener("click", () => {
+      if (panel.hidden) {
+        openPanel();
+      } else {
+        closePanel();
+      }
+    });
+
+    panel.querySelectorAll("a[href]").forEach((link) => {
+      link.addEventListener("click", () => {
+        closePanel();
+      });
+    });
+
+    root.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closePanel();
+        toggle.focus();
+      }
+    });
+  };
+
+  initMobileNav();
+</script>

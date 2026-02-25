@@ -1,0 +1,76 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  post: CollectionEntry<"blog">;
+}
+
+const { post } = Astro.props as Props;
+
+const formattedDate = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+}).format(post.data.pubDate);
+
+const postBody = post.body ?? "";
+const wordCount = postBody.trim().split(/\s+/).filter(Boolean).length;
+const minutesToRead = Math.max(1, Math.ceil(wordCount / 220));
+const readingTime = `${minutesToRead} min read`;
+---
+
+<article
+  class="ui-surface-gradient group flex items-center justify-between gap-5 rounded-2xl p-6 md:gap-8 md:p-7"
+>
+  <div class="min-w-0 flex-1">
+    <p class="ui-text-muted mb-4 font-mono text-sm">
+      {formattedDate}
+      <span class="ui-text-faint px-2">&bull;</span>
+      {readingTime}
+    </p>
+
+    <h2 class="text-3xl font-semibold leading-tight tracking-tight text-white md:text-4xl">
+      <a href={`/blog/${post.id}/`} class="ui-inline-action transition-colors group-hover:text-indigo-300">
+        {post.data.title}
+      </a>
+    </h2>
+
+    <p class="mt-4 text-lg leading-relaxed text-slate-400 md:text-xl">{post.data.description}</p>
+
+    <ul class="mt-5 flex flex-wrap gap-2 font-mono">
+      {
+        post.data.tags.map((tag: string) => (
+          <li>
+              <a
+                href={`/tags/${encodeURIComponent(tag)}/`}
+                class="ui-chip-link inline-flex rounded-md border border-(--color-border-chip) bg-(--color-bg-card) px-3 py-1 text-sm text-slate-300"
+              >
+                {tag}
+              </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <a
+    href={`/blog/${post.id}/`}
+    aria-label={`Read ${post.data.title}`}
+    class="ui-icon-action ui-text-muted inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-(--color-border-chip) hover:border-indigo-400 hover:text-indigo-300"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="h-4 w-4"
+      aria-hidden="true"
+    >
+      <path d="M5 12h14"></path>
+      <path d="m13 5 7 7-7 7"></path>
+    </svg>
+  </a>
+</article>

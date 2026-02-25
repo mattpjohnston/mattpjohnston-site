@@ -1,0 +1,32 @@
+---
+const nowItems = [
+  {
+    colorClass: "bg-emerald-400",
+    text: "Building software projects with a focus on practical engineering fundamentals and cloud native deployments.",
+  },
+  {
+    colorClass: "bg-indigo-400",
+    text: "Learning Java and strengthening backend fundamentals around API design and data modeling.",
+  },
+  {
+    colorClass: "bg-amber-400",
+    text: "Continuing to build and refine projects in React, Node/Express, PostgreSQL, and testing.",
+  },
+];
+---
+
+<section class="py-16 md:py-20">
+  <div class="ui-now-surface mx-auto max-w-4xl rounded-2xl p-8 md:p-10">
+    <h2 class="mb-6 text-3xl font-semibold tracking-tight text-white md:text-[2rem]">What I&apos;m doing now</h2>
+    <ul class="space-y-4 text-lg leading-relaxed text-slate-300 md:text-[1.35rem]">
+      {
+        nowItems.map((item) => (
+          <li class="flex items-start gap-3">
+            <span class:list={["mt-2 h-2 w-2 shrink-0 rounded-full", item.colorClass]}></span>
+            <span>{item.text}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

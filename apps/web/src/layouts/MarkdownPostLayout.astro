@@ -1,0 +1,82 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+interface Frontmatter {
+  title: string;
+  pubDate: Date;
+  description: string;
+  author: string;
+  image: { url: string; alt: string };
+  tags: string[];
+}
+
+interface Props {
+  frontmatter: Frontmatter;
+  readingTimeMinutes?: number;
+}
+
+const { frontmatter, readingTimeMinutes = 1 } = Astro.props as Props;
+
+const publishedDate = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+}).format(frontmatter.pubDate);
+---
+
+<BaseLayout pageTitle={frontmatter.title}>
+  <article class="mx-auto max-w-3xl pb-20 pt-16 md:pt-20">
+    <p>
+      <a
+        href="/blog/"
+        class="ui-inline-action ui-text-muted inline-flex items-center gap-2 text-sm hover:text-indigo-300"
+      >
+        <span aria-hidden="true">&larr;</span>
+        Back to all posts
+      </a>
+    </p>
+
+    <header class="ui-border-main-soft mt-8 border-b pb-8">
+      <p class="font-mono text-sm text-indigo-300">Guide</p>
+      <h1 class="mt-4 text-4xl font-semibold leading-tight tracking-tight text-white md:text-5xl">
+        {frontmatter.title}
+      </h1>
+      <p class="mt-5 text-lg leading-relaxed text-slate-300 md:text-xl">{frontmatter.description}</p>
+
+      <div class="ui-text-subtle mt-7 flex flex-wrap items-center gap-3 text-sm">
+        <p>
+          By <span class="text-slate-100">{frontmatter.author}</span>
+        </p>
+        <span aria-hidden="true">&bull;</span>
+        <p>{publishedDate}</p>
+        <span aria-hidden="true">&bull;</span>
+        <p>{readingTimeMinutes} min read</p>
+      </div>
+    </header>
+
+    <figure class="ui-surface-gradient mt-8 overflow-hidden rounded-2xl">
+      <img src={frontmatter.image.url} alt={frontmatter.image.alt} class="h-auto w-full object-cover" loading="eager" />
+    </figure>
+
+    <ul class="mt-6 flex flex-wrap gap-2 font-mono">
+      {
+        frontmatter.tags.map((tag) => (
+          <li>
+            <a
+              href={`/tags/${encodeURIComponent(tag)}/`}
+              class="ui-chip-link inline-flex rounded-md border border-(--color-border-chip) bg-(--color-bg-card) px-3 py-1 text-sm text-slate-300 hover:text-indigo-300"
+            >
+              {tag}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <section class="ui-blog-article-surface mt-10 rounded-2xl p-6 md:p-8">
+      <div class="blog-post-content">
+        <slot />
+      </div>
+    </section>
+  </article>
+</BaseLayout>

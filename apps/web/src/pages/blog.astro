@@ -1,0 +1,20 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import BlogIntro from "../components/blog/BlogIntro.astro";
+import BlogPostList from "../components/blog/BlogPostList.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+type BlogEntry = CollectionEntry<"blog">;
+const allPosts: BlogEntry[] = await getCollection("blog");
+const sortedPosts = [...allPosts].sort(
+  (a: BlogEntry, b: BlogEntry) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+const pageTitle = "Blog";
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <div class="mx-auto max-w-4xl">
+    <BlogIntro />
+    <BlogPostList posts={sortedPosts} />
+  </div>
+</BaseLayout>

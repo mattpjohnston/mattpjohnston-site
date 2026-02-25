@@ -1,0 +1,30 @@
+---
+import type { CollectionEntry } from "astro:content";
+import BlogPostCard from "./BlogPostCard.astro";
+
+interface Props {
+  posts: CollectionEntry<"blog">[];
+}
+
+const { posts } = Astro.props as Props;
+---
+
+<section class="pb-20 md:pb-24">
+  {
+    posts.length > 0 ? (
+      <ul class="space-y-6">
+        {
+          posts.map((post) => (
+            <li>
+              <BlogPostCard post={post} />
+            </li>
+          ))
+        }
+      </ul>
+    ) : (
+      <p class="ui-surface-gradient rounded-xl p-8 text-lg text-slate-300">
+        No posts yet. Add markdown files in `src/blog` to publish your first write-up.
+      </p>
+    )
+  }
+</section>

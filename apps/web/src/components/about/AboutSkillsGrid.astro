@@ -1,0 +1,35 @@
+---
+const skills = [
+  "JavaScript",
+  "TypeScript",
+  "React",
+  "Node.js",
+  "Express",
+  "PostgreSQL",
+  "Astro",
+  "REST API",
+  "Tailwind CSS",
+  "Pug & EJS",
+  "HTML5 & CSS3",
+  "Vite / Webpack",
+  "Vitest / Jest",
+  "Git & GitHub",
+  "Linux",
+  "AWS & Azure",
+  "On-prem"
+];
+---
+
+<section class="border-t border-(--color-border-main)/80 pb-20 pt-12 md:pb-24">
+  <h2 class="text-4xl font-semibold tracking-tight text-white md:text-[2.2rem]">Technical Skills</h2>
+
+  <ul class="mt-8 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
+    {
+      skills.map((skill) => (
+        <li class="tech-tag ui-chip-muted flex min-h-14 items-center justify-center rounded-xl border border-(--color-border-chip) bg-[rgb(16_29_63_/_0.85)] px-4 text-center text-base text-slate-200 md:text-lg">
+          {skill}
+        </li>
+      ))
+    }
+  </ul>
+</section>

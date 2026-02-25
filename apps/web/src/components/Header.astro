@@ -1,0 +1,18 @@
+---
+import Navigation from "./Navigation.astro";
+---
+
+<header class="ui-header-shell sticky top-0 z-50 border-b backdrop-blur-md">
+  <div class="mx-auto flex h-16 w-full max-w-5xl items-center justify-between px-4 md:px-6">
+    <a
+      href="/"
+      aria-label="Home"
+      class="brand-link flex items-center gap-2 font-semibold tracking-tight"
+    >
+      <span aria-hidden="true" class="text-indigo-400">&lt;&gt;</span>
+      <span class="brand-shimmer-text">mattpjohnston</span>
+      <span aria-hidden="true" class="text-indigo-400">&lt;/&gt;</span>
+    </a>
+    <Navigation />
+  </div>
+</header>

@@ -1,0 +1,42 @@
+---
+import "../styles/global.css";
+import { ClientRouter } from "astro:transitions";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import GlowFollow from "../components/effects/GlowFollow.svelte";
+const { pageTitle } = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+    <ClientRouter />
+  </head>
+  <body class="flex min-h-screen flex-col bg-(--color-bg-base) text-slate-100 selection:bg-indigo-500/30">
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-100 focus:rounded-md focus:bg-(--color-bg-panel-to) focus:px-3 focus:py-2 focus:text-sm focus:text-white"
+    >
+      Skip to main content
+    </a>
+
+    <div class="pointer-events-none fixed inset-0 -z-10">
+      <GlowFollow client:load />
+      <div
+        class="absolute inset-0 bg-[linear-gradient(to_right,#64748b1a_1px,transparent_1px),linear-gradient(to_bottom,#64748b1a_1px,transparent_1px)] bg-size-[28px_28px]"
+      >
+      </div>
+    </div>
+
+    <Header />
+    <main id="main-content" class="relative z-10 mx-auto w-full max-w-5xl flex-1 px-4 md:px-6">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

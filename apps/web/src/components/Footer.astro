@@ -1,0 +1,39 @@
+---
+import GitHubIcon from "./icons/GitHubIcon.astro";
+import LinkedInIcon from "./icons/LinkedInIcon.astro";
+import MailIcon from "./icons/MailIcon.astro";
+---
+
+<footer class="ui-footer-shell relative z-10 border-t">
+  <nav aria-label="Footer" class="mx-auto flex w-full max-w-5xl items-center justify-center gap-5 px-4 py-7 md:px-6">
+    <a
+      href="/contact/"
+      class="ui-inline-action ui-text-muted inline-flex items-center gap-2 text-sm hover:text-indigo-300"
+    >
+      <MailIcon class="h-4 w-4" />
+      Get in touch
+    </a>
+
+    <span aria-hidden="true" class="ui-divider h-4 w-px"></span>
+
+    <a
+      href="https://github.com/mattpjohnston"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="GitHub"
+      class="ui-icon-action ui-text-muted inline-flex h-8 w-8 items-center justify-center rounded-md border border-transparent hover:text-indigo-300"
+    >
+      <GitHubIcon class="h-5 w-5" />
+    </a>
+
+    <a
+      href="https://linkedin.com/in/mattpjohnston"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="LinkedIn"
+      class="ui-icon-action ui-text-muted inline-flex h-8 w-8 items-center justify-center rounded-md border border-transparent hover:text-indigo-300"
+    >
+      <LinkedInIcon class="h-5 w-5" />
+    </a>
+  </nav>
+</footer>

@@ -1,0 +1,41 @@
+---
+import { getCollection, type CollectionEntry } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+type BlogEntry = CollectionEntry<"blog">;
+const allPosts: BlogEntry[] = await getCollection("blog");
+const tags: string[] = [...new Set(allPosts.flatMap((post: BlogEntry) => post.data.tags))].sort((a, b) =>
+  a.localeCompare(b),
+);
+const pageTitle = "Tags";
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <section class="mx-auto max-w-4xl pb-20 pt-20 md:pb-24 md:pt-24">
+    <h1 class="text-5xl font-semibold tracking-tight text-white md:text-6xl">Browse by Tag</h1>
+    <p class="mt-6 max-w-3xl text-xl leading-relaxed text-slate-400 md:text-2xl">
+      Explore posts by topic.
+    </p>
+
+    {
+      tags.length > 0 ? (
+        <ul class="mt-8 flex flex-wrap gap-2 font-mono">
+          {tags.map((tag) => (
+            <li>
+              <a
+                href={`/tags/${encodeURIComponent(tag)}/`}
+                class="ui-chip-link inline-flex rounded-md border border-(--color-border-chip) bg-(--color-bg-card) px-3 py-1 text-sm text-slate-300 hover:text-indigo-300"
+              >
+                {tag}
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="ui-surface-deep mt-8 rounded-xl p-6 text-slate-300">
+          No tags yet.
+        </p>
+      )
+    }
+  </section>
+</BaseLayout>

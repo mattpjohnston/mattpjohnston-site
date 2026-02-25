@@ -1,0 +1,100 @@
+---
+import type { CollectionEntry } from "astro:content";
+import ExternalLinkIcon from "../icons/ExternalLinkIcon.astro";
+import GitHubIcon from "../icons/GitHubIcon.astro";
+
+interface Props {
+  project?: CollectionEntry<"projects">;
+}
+
+const { project } = Astro.props;
+---
+
+<section class="ui-featured-band relative left-1/2 right-1/2 -mx-[50vw] w-screen border-y py-16 md:py-20">
+  <div class="mx-auto max-w-5xl px-4 md:px-6">
+    <div class="mb-8 flex items-center justify-between gap-4 md:mb-10">
+      <h2 class="inline-flex items-center gap-2 text-3xl font-semibold tracking-tight text-slate-100">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="h-5 w-5 text-indigo-300"
+          aria-hidden="true"
+        >
+          <path d="M12 3l1.5 4.5L18 9l-4.5 1.5L12 15l-1.5-4.5L6 9l4.5-1.5L12 3z"></path>
+          <path d="M5 16l1 3 3 1-3 1-1 3-1-3-3-1 3-1 1-3z"></path>
+        </svg>
+        Featured Project
+      </h2>
+      <a href="/projects/" class="ui-inline-action ui-text-muted text-base hover:text-indigo-300">
+        View all projects <span aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+
+    {
+      project ? (
+        <article class="featured-project-card group ui-surface-deep rounded-2xl p-8 md:p-10">
+          <div class="grid gap-8 md:grid-cols-[1.05fr_0.95fr] md:items-center">
+            <div>
+              <p class="mb-5 inline-flex rounded-full border border-indigo-400/30 bg-indigo-500/10 px-3 py-1 font-mono text-sm text-indigo-300">
+                featured
+              </p>
+              <h3 class="mb-4 text-4xl font-semibold leading-tight tracking-tight text-white md:text-5xl">
+                {project.data.title}
+              </h3>
+              <p class="mb-6 max-w-xl text-lg leading-relaxed text-slate-400 md:text-xl">{project.data.summary}</p>
+
+              <ul class="mb-8 flex flex-wrap gap-2 font-mono">
+                {project.data.stack.map((tag: string) => <li class="tech-tag ui-featured-chip ui-chip-muted rounded-md border px-3 py-1 text-sm text-slate-300">{tag}</li>)}
+              </ul>
+
+              <p class="flex flex-wrap items-center gap-5 text-lg md:text-base">
+                {project.data.liveUrl && (
+                  <a
+                    href={project.data.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="ui-inline-action inline-flex items-center gap-2 text-slate-100 hover:text-indigo-300"
+                  >
+                    <ExternalLinkIcon class="h-4 w-4" />
+                    Live Demo
+                  </a>
+                )}
+                {project.data.repoUrl && (
+                  <a
+                    href={project.data.repoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="ui-inline-action ui-text-subtle inline-flex items-center gap-2 hover:text-indigo-300"
+                  >
+                    <GitHubIcon class="h-4 w-4" />
+                    Source Code
+                  </a>
+                )}
+              </p>
+            </div>
+
+            <div class="featured-project-visual ui-featured-visual-surface relative aspect-4/3 overflow-hidden rounded-2xl border">
+              <div class="featured-project-visual-glow absolute inset-0 bg-linear-to-br from-indigo-500/10 to-cyan-500/10"></div>
+              <img
+                src="/assets/battleship-featured.png"
+                alt="Screenshot of the Battleship game interface"
+                class="featured-project-image h-full w-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+          </div>
+        </article>
+      ) : (
+        <p class="ui-surface-deep rounded-xl p-8 text-slate-300">
+          Nothing here.
+        </p>
+      )
+    }
+  </div>
+</section>

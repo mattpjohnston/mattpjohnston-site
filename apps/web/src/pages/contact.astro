@@ -1,0 +1,21 @@
+---
+import ContactFormCard from "../components/contact/ContactFormCard.astro";
+import ContactInfoCards from "../components/contact/ContactInfoCards.astro";
+import ContactIntro from "../components/contact/ContactIntro.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const pageTitle = "Contact";
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <div class="mx-auto max-w-5xl">
+    <ContactIntro />
+
+    <section class="pb-20 md:pb-24">
+      <div class="grid gap-8 md:grid-cols-[0.95fr_1.05fr] md:items-start md:gap-10">
+        <ContactInfoCards />
+        <ContactFormCard />
+      </div>
+    </section>
+  </div>
+</BaseLayout>

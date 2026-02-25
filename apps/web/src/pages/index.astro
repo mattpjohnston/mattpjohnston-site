@@ -1,0 +1,18 @@
+---
+import { getCollection } from "astro:content";
+import HeroSection from "../components/home/HeroSection.astro";
+import FeaturedProjectSection from "../components/home/FeaturedProjectSection.astro";
+import NowSection from "../components/home/NowSection.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const pageTitle = "Home";
+const allProjects = await getCollection("projects");
+const sortedProjects = [...allProjects].sort((a, b) => a.data.order - b.data.order);
+const featuredProject = sortedProjects.find((project) => project.data.featured) ?? sortedProjects[0];
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <HeroSection />
+  <FeaturedProjectSection project={featuredProject} />
+  <NowSection />
+</BaseLayout>

@@ -1,0 +1,30 @@
+---
+import type { CollectionEntry } from "astro:content";
+import ProjectCard from "./ProjectCard.astro";
+
+interface Props {
+  projects: CollectionEntry<"projects">[];
+}
+
+const { projects } = Astro.props;
+---
+
+<section class="pb-20 md:pb-24">
+  {
+    projects.length > 0 ? (
+      <ul class="grid gap-7 md:grid-cols-2">
+        {
+          projects.map((project) => (
+            <li class="h-full">
+              <ProjectCard project={project} />
+            </li>
+          ))
+        }
+      </ul>
+    ) : (
+      <p class="ui-surface-deep rounded-xl p-8 text-lg text-slate-300">
+        No projects yet.
+      </p>
+    )
+  }
+</section>
