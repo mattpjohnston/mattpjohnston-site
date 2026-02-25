@@ -3,8 +3,8 @@ import GitHubIcon from "./icons/GitHubIcon.astro";
 import LinkedInIcon from "./icons/LinkedInIcon.astro";
 
 const navLinks = [
-  { name: "About", path: "/about/" },
   { name: "Projects", path: "/projects/" },
+  { name: "About", path: "/about/" },
   // { name: "Blog", path: "/blog/" },
   { name: "Contact", path: "/contact/" },
 ];
@@ -234,4 +234,5 @@ const socialLinkClass =
   };
 
   initMobileNav();
+  document.addEventListener("astro:page-load", initMobileNav);
 </script>
