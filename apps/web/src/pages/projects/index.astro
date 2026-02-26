@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 import ProjectsGrid from "../../components/projects/ProjectsGrid.astro";
 import ProjectsIntro from "../../components/projects/ProjectsIntro.astro";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import ProjectSiteNote from "../../components/projects/ProjectSiteNote.astro";
 
 const pageTitle = "Projects";
 const allProjects = await getCollection("projects");
@@ -11,5 +12,6 @@ const projects = [...allProjects].sort((a, b) => a.data.order - b.data.order);
 
 <BaseLayout pageTitle={pageTitle}>
   <ProjectsIntro />
+  <ProjectSiteNote />
   <ProjectsGrid projects={projects} />
 </BaseLayout>

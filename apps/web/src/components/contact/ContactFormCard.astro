@@ -1,11 +1,23 @@
 ---
 const fieldClass =
-  "w-full rounded-xl border border-(--color-border-chip) bg-(--color-bg-surface) px-4 py-3 text-slate-100 placeholder:text-(--color-text-faint) focus-visible:border-indigo-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/30";
+  "w-full rounded-xl border border-(--color-border-chip) bg-(--color-bg-surface) px-4 py-3 text-slate-100 placeholder:text-(--color-text-faint) focus-visible:border-indigo-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/30 aria-[invalid=true]:border-rose-400 aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-rose-500/30";
 ---
 
 <section aria-labelledby="contact-form-title" class="ui-surface-gradient rounded-2xl p-6 md:p-7">
   <h2 id="contact-form-title" class="sr-only">Contact form</h2>
-  <form name="contact" method="post" action="/contact/" class="space-y-5">
+  <form
+    name="contact"
+    method="post"
+    action="https://formspree.io/f/mbdawbvb"
+    novalidate
+    class="space-y-5"
+    data-contact-form
+  >
+    <div aria-hidden="true" class="hidden">
+      <label for="company">Company</label>
+      <input id="company" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+
     <div>
       <label for="name" class="mb-2 block text-base font-medium text-slate-300">Name</label>
       <input
@@ -17,6 +29,7 @@ const fieldClass =
         placeholder="Your Name"
         class={fieldClass}
       />
+      <p class="mt-2 min-h-5 text-sm text-rose-300/90" data-field-error-for="name" aria-live="polite"></p>
     </div>
 
     <div>
@@ -30,6 +43,7 @@ const fieldClass =
         placeholder="you@example.com"
         class={fieldClass}
       />
+      <p class="mt-2 min-h-5 text-sm text-rose-300/90" data-field-error-for="email" aria-live="polite"></p>
     </div>
 
     <div>
@@ -43,10 +57,12 @@ const fieldClass =
         placeholder="How can I help you?"
         class={fieldClass}
       ></textarea>
+      <p class="mt-2 min-h-5 text-sm text-rose-300/90" data-field-error-for="message" aria-live="polite"></p>
     </div>
 
     <button
       type="submit"
+      data-submit-button
       class="ui-btn-primary inline-flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-indigo-600 to-violet-600 px-5 py-3 text-base font-medium text-white hover:from-indigo-500 hover:to-violet-500"
     >
       Send Message
@@ -65,5 +81,115 @@ const fieldClass =
         <path d="m22 2-7 20-4-9-9-4z"></path>
       </svg>
     </button>
+    <p class="ui-text-muted min-h-5 text-sm text-center" data-form-status aria-live="polite"></p>
   </form>
 </section>
+
+<script>
+  const SUCCESS_REDIRECT = "/contact/sent/";
+
+  const initContactForm = () => {
+    const form = document.querySelector<HTMLFormElement>("[data-contact-form]");
+    if (!form || form.dataset.ready === "true") return;
+    form.dataset.ready = "true";
+
+    const submitButton = form.querySelector<HTMLButtonElement>("[data-submit-button]");
+    const status = form.querySelector<HTMLElement>("[data-form-status]");
+    let hasSubmitted = false;
+
+    const setStatus = (message: string) => {
+      if (!status) return;
+      status.textContent = message;
+    };
+
+    const setSubmitting = (isSubmitting: boolean) => {
+      if (!submitButton) return;
+      submitButton.disabled = isSubmitting;
+      submitButton.classList.toggle("cursor-not-allowed", isSubmitting);
+      submitButton.classList.toggle("opacity-70", isSubmitting);
+    };
+
+    const requiredFields = Array.from(
+      form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("input[required], textarea[required]"),
+    );
+    const fieldMessage = (field: HTMLInputElement | HTMLTextAreaElement) => {
+      const value = field.value.trim();
+      if (!value) {
+        return field.name === "name"
+          ? "Please enter your name."
+          : field.name === "email"
+            ? "Please enter your email."
+            : "Please enter a message.";
+      }
+      if (field.name === "email" && field.validity.typeMismatch) {
+        return "Please enter a valid email address.";
+      }
+      return "";
+    };
+    const setMessage = (field: HTMLInputElement | HTMLTextAreaElement) => {
+      const message = fieldMessage(field);
+      const error = form.querySelector<HTMLElement>(`[data-field-error-for="${field.name}"]`);
+      if (error) error.textContent = message;
+      field.setAttribute("aria-invalid", message ? "true" : "false");
+      return !message;
+    };
+    const emailField = form.querySelector<HTMLInputElement>('input[name="email"]');
+    emailField?.addEventListener("blur", () => {
+      if (!hasSubmitted && !emailField.value.trim()) {
+        const error = form.querySelector<HTMLElement>('[data-field-error-for="email"]');
+        if (error) error.textContent = "";
+        emailField.setAttribute("aria-invalid", "false");
+        return;
+      }
+      setMessage(emailField);
+    });
+    requiredFields.forEach((field) => {
+      field.addEventListener("input", () => {
+        if (!hasSubmitted) return;
+        setMessage(field);
+      });
+    });
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (submitButton?.disabled) return;
+      hasSubmitted = true;
+      const firstInvalidField = requiredFields.find((field) => !setMessage(field));
+      if (firstInvalidField) {
+        setStatus("Please fix the highlighted fields.");
+        firstInvalidField.focus();
+        return;
+      }
+
+      setSubmitting(true);
+      form.setAttribute("aria-busy", "true");
+      setStatus("Sending...");
+
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+          headers: {
+            Accept: "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          setStatus("Could not send. Please try again.");
+          return;
+        }
+
+        form.reset();
+        window.location.assign(SUCCESS_REDIRECT);
+      } catch {
+        setStatus("Network error. Please try again.");
+      } finally {
+        form.removeAttribute("aria-busy");
+        setSubmitting(false);
+      }
+    });
+  };
+
+  initContactForm();
+  document.addEventListener("astro:page-load", initContactForm);
+</script>

@@ -1,0 +1,34 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const pageTitle = "Message Sent";
+---
+
+<BaseLayout pageTitle={pageTitle}>
+  <section class="mx-auto flex min-h-[62vh] max-w-2xl flex-col justify-center pb-16 pt-14 md:min-h-[66vh] md:pb-20 md:pt-20">
+    <h1 class="mt-2 text-5xl font-semibold tracking-tight text-white md:text-6xl">Message sent</h1>
+    <p class="mt-5 text-xl leading-relaxed text-slate-400 md:text-2xl">
+      Thanks for reaching out. I&apos;ll get back to you as soon as I can.
+    </p>
+
+    <div class="ui-surface-gradient mt-8 rounded-2xl p-6 md:p-7">
+      <p class="text-base text-slate-300 md:text-lg">
+        Need to send another message or jump back to the homepage?
+      </p>
+      <nav aria-label="After submit actions" class="mt-6 flex flex-wrap gap-4">
+        <a
+          href="/contact/"
+          class="ui-btn-secondary inline-flex items-center rounded-xl border border-white/10 bg-slate-800 px-7 py-3 text-base font-medium text-slate-100 hover:bg-slate-700"
+        >
+          Send another
+        </a>
+        <a
+          href="/"
+          class="ui-btn-primary inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-7 py-3 text-base font-medium text-white shadow-lg shadow-indigo-500/20 hover:bg-indigo-500"
+        >
+          Go home <span aria-hidden="true">→</span>
+        </a>
+      </nav>
+    </div>
+  </section>
+</BaseLayout>

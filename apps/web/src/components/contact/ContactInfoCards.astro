@@ -4,20 +4,20 @@ import MailIcon from "../icons/MailIcon.astro";
 const cardClass = "ui-surface-gradient rounded-2xl p-6";
 ---
 
-<section aria-label="Contact details" class="space-y-6">
+<section aria-label="Contact details" class="w-full space-y-6">
   <article class={cardClass}>
-    <div class="flex items-center gap-4">
+    <div class="flex w-full items-center gap-4">
       <span
         aria-hidden="true"
-        class="ui-icon-badge inline-flex h-11 w-11 items-center justify-center rounded-full"
+        class="ui-icon-badge inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
       >
         <MailIcon class="h-5 w-5" />
       </span>
-      <div>
+      <div class="min-w-0">
         <h2 class="text-2xl font-semibold text-white">Email</h2>
         <a
           href="mailto:matthewjohnston134@gmail.com"
-          class="ui-inline-action mt-1 block text-lg text-slate-400 hover:text-indigo-300"
+          class="ui-inline-action mt-1 block whitespace-nowrap text-[clamp(0.72rem,3.6vw,1.125rem)] leading-tight text-slate-400 hover:text-indigo-300"
         >
           matthewjohnston134@gmail.com
         </a>
@@ -26,10 +26,10 @@ const cardClass = "ui-surface-gradient rounded-2xl p-6";
   </article>
 
   <article class={cardClass}>
-    <div class="flex items-center gap-4">
+    <div class="flex w-full items-center gap-4">
       <span
         aria-hidden="true"
-        class="ui-icon-badge inline-flex h-11 w-11 items-center justify-center rounded-full"
+        class="ui-icon-badge inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -45,7 +45,7 @@ const cardClass = "ui-surface-gradient rounded-2xl p-6";
           <circle cx="12" cy="12" r="2.5"></circle>
         </svg>
       </span>
-      <div>
+      <div class="min-w-0">
         <h2 class="text-2xl font-semibold text-white">Location</h2>
         <p class="mt-1 text-lg text-slate-400">Belfast / Remote</p>
       </div>
