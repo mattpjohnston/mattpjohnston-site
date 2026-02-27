@@ -8,8 +8,6 @@ const {
   pageTitle,
   pageDescription = "Portfolio site for Matthew Johnston featuring projects, experiments, and learning notes.",
 } = Astro.props;
-const counterApiUrl = import.meta.env.PUBLIC_COUNTER_API_URL ?? "";
-const counterApiOrigin = counterApiUrl ? new URL(counterApiUrl).origin : "";
 ---
 
 <html lang="en">
@@ -20,7 +18,6 @@ const counterApiOrigin = counterApiUrl ? new URL(counterApiUrl).origin : "";
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content={pageDescription} />
-    {counterApiOrigin && <link rel="preconnect" href={counterApiOrigin} crossorigin />}
     <title>{pageTitle}</title>
     <ClientRouter />
   </head>

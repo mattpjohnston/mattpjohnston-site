@@ -1,7 +1,9 @@
 ---
+import { Image } from "astro:assets";
 import GitHubIcon from "../icons/GitHubIcon.astro";
 import LinkedInIcon from "../icons/LinkedInIcon.astro";
 import MailIcon from "../icons/MailIcon.astro";
+import profileImage from "../../assets/me.jpg";
 
 const socialButtonClass =
   "ui-about-social ui-icon-action ui-text-muted inline-flex h-11 w-11 items-center justify-center rounded-full border hover:text-indigo-300";
@@ -65,10 +67,14 @@ const personalInterests = [
 
     <div class="space-y-4 rounded-2xl p-0">
       <div class="ui-photo-frame min-h-88 overflow-hidden rounded-2xl shadow-[0_18px_42px_rgba(2,10,34,0.45)] md:min-h-104">
-        <img
-          src="/assets/me.jpg"
+        <Image
+          src={profileImage}
           alt="Portrait of Matthew Johnston"
           class="h-full w-full object-cover object-center"
+          widths={[520, 768, 1040]}
+          sizes="(max-width: 768px) 100vw, 520px"
+          format="webp"
+          quality={90}
           loading="eager"
           decoding="async"
         />

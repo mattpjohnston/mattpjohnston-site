@@ -1,7 +1,9 @@
 ---
+import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import ExternalLinkIcon from "../icons/ExternalLinkIcon.astro";
 import GitHubIcon from "../icons/GitHubIcon.astro";
+import featuredProjectImage from "../../assets/battleship-featured.png";
 
 interface Props {
   project?: CollectionEntry<"projects">;
@@ -80,10 +82,13 @@ const { project } = Astro.props;
 
             <div class="featured-project-visual ui-featured-visual-surface relative aspect-4/3 overflow-hidden rounded-2xl border">
               <div class="featured-project-visual-glow absolute inset-0 bg-linear-to-br from-indigo-500/10 to-cyan-500/10"></div>
-              <img
-                src="/assets/battleship-featured.png"
+              <Image
+                src={featuredProjectImage}
                 alt="Screenshot of the Battleship game interface"
                 class="featured-project-image h-full w-full object-cover"
+                widths={[546, 1092]}
+                sizes="(max-width: 768px) 100vw, 546px"
+                format="webp"
                 loading="lazy"
                 decoding="async"
               />
