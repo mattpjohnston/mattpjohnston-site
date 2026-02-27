@@ -4,7 +4,12 @@ import { ClientRouter } from "astro:transitions";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import GlowFollow from "../components/effects/GlowFollow.svelte";
-const { pageTitle } = Astro.props;
+const {
+  pageTitle,
+  pageDescription = "Portfolio site for Matthew Johnston featuring projects, experiments, and learning notes.",
+} = Astro.props;
+const counterApiUrl = import.meta.env.PUBLIC_COUNTER_API_URL ?? "";
+const counterApiOrigin = counterApiUrl ? new URL(counterApiUrl).origin : "";
 ---
 
 <html lang="en">
@@ -14,6 +19,8 @@ const { pageTitle } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={pageDescription} />
+    {counterApiOrigin && <link rel="preconnect" href={counterApiOrigin} crossorigin />}
     <title>{pageTitle}</title>
     <ClientRouter />
   </head>
@@ -26,7 +33,7 @@ const { pageTitle } = Astro.props;
     </a>
 
     <div class="pointer-events-none fixed inset-0 -z-10">
-      <GlowFollow client:load />
+      <GlowFollow client:idle />
       <div
         class="absolute inset-0 bg-[linear-gradient(to_right,#64748b1a_1px,transparent_1px),linear-gradient(to_bottom,#64748b1a_1px,transparent_1px)] bg-size-[28px_28px]"
       >
