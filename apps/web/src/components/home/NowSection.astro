@@ -21,8 +21,8 @@ const nowItems = [
     <ul class="space-y-4 text-lg leading-relaxed text-slate-300 md:text-[1.35rem]">
       {
         nowItems.map((item) => (
-          <li class="flex items-start gap-3">
-            <span class:list={["mt-2 h-2 w-2 shrink-0 rounded-full", item.colorClass]}></span>
+          <li class="flex items-center gap-3">
+            <span class:list={["h-2 w-2 shrink-0 rounded-full", item.colorClass]}></span>
             <span>{item.text}</span>
           </li>
         ))
