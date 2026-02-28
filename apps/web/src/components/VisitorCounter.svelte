@@ -1,79 +1,69 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  const apiUrl = import.meta.env.PUBLIC_COUNTER_API_URL ?? "";
+  const API_URL = import.meta.env.PUBLIC_COUNTER_API_URL ?? "";
   const CACHE_KEY = "visitor-count";
-  const REQUEST_TIMEOUT_MS = 1500;
-  const RETRY_DELAY_MS = 150;
+  const TIMEOUT_MS = 10_000;
+  const MAX_RETRIES = 3;
 
   let countText = "Visits --";
-  let inFlightRequest: Promise<number | null> | null = null;
 
-  const parseCount = (payload: unknown): number | null => {
-    if (typeof payload !== "object" || payload === null || !("count" in payload)) {
-      return null;
-    }
+  function sleep(ms: number) {
+    return new Promise<void>((resolve) => setTimeout(resolve, ms));
+  }
 
-    const count = Number((payload as { count: unknown }).count);
-    return Number.isFinite(count) ? count : null;
-  };
+  function getCachedCount(): number | null {
+    const raw = sessionStorage.getItem(CACHE_KEY);
+    if (raw === null) return null;
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : null;
+  }
 
-  const wait = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
-
-  const fetchCountOnce = async (): Promise<number | null> => {
+  async function fetchCount(): Promise<number | null> {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+    const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
     try {
-      const response = await fetch(apiUrl, { method: "GET", cache: "no-cache", signal: controller.signal });
-      if (!response.ok) return null;
-      return parseCount(await response.json());
+      const res = await fetch(API_URL, { signal: controller.signal });
+      if (!res.ok) return null;
+
+      const data = await res.json();
+      const count = Number(data?.count);
+      return Number.isFinite(count) ? count : null;
+    } catch {
+      return null;
     } finally {
-      clearTimeout(timeout);
+      clearTimeout(timer);
     }
-  };
+  }
 
-  const fetchCount = (): Promise<number | null> => {
-    if (!inFlightRequest) {
-      inFlightRequest = (async () => {
-        try {
-          const firstTry = await fetchCountOnce();
-          if (firstTry !== null) return firstTry;
+  async function fetchCountWithRetries(): Promise<number | null> {
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+      if (attempt > 0) await sleep(1_000 * 2 ** (attempt - 1));
 
-          await wait(RETRY_DELAY_MS);
-          return await fetchCountOnce();
-        } catch {
-          return null;
-        }
-      })().finally(() => {
-        inFlightRequest = null;
-      });
+      const count = await fetchCount();
+      if (count !== null) return count;
     }
-    return inFlightRequest;
-  };
 
-  const loadVisitorCounter = async (): Promise<void> => {
-    if (!apiUrl) {
+    return null;
+  }
+
+  onMount(async () => {
+    if (!API_URL) {
       countText = "Visits unavailable";
       return;
     }
 
-    const cachedRaw = sessionStorage.getItem(CACHE_KEY);
-    const cached = cachedRaw === null ? Number.NaN : Number(cachedRaw);
-    const hasCached = Number.isFinite(cached);
-    countText = hasCached ? `Visits: ${cached}` : "Visits ...";
+    const cached = getCachedCount();
+    if (cached !== null) countText = `Visits: ${cached}`;
 
-    const value = await fetchCount();
-    if (value !== null) {
-      sessionStorage.setItem(CACHE_KEY, String(value));
-      countText = `Visits: ${value}`;
-      return;
+    const count = await fetchCountWithRetries();
+    if (count !== null) {
+      sessionStorage.setItem(CACHE_KEY, String(count));
+      countText = `Visits: ${count}`;
+    } else if (cached === null) {
+      countText = "Visits unavailable";
     }
-
-    if (!hasCached) countText = "Visits unavailable";
-  };
-
-  onMount(() => {
-    void loadVisitorCounter();
   });
 </script>
 

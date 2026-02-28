@@ -47,7 +47,7 @@ variable "lambda_timeout" {
 
 variable "lambda_memory_size" {
   type    = number
-  default = 128
+  default = 512
 }
 
 variable "tags" {
