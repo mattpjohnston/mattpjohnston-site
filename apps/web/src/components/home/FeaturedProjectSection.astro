@@ -3,13 +3,23 @@ import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import ExternalLinkIcon from "../icons/ExternalLinkIcon.astro";
 import GitHubIcon from "../icons/GitHubIcon.astro";
-import featuredProjectImage from "../../assets/battleship-featured.png";
+import battleshipFeaturedImage from "../../assets/battleship-featured.png";
+import shoppingCartFeaturedImage from "../../assets/shopping-cart-featured.png";
 
 interface Props {
   project?: CollectionEntry<"projects">;
 }
 
 const { project } = Astro.props;
+const isBattleshipPreview = project?.data.title === "Battleship";
+const isShoppingCartPreview = project?.data.title === "Shopping Cart";
+const hasFeaturedPreview = isBattleshipPreview || isShoppingCartPreview;
+const featuredProjectImage = isShoppingCartPreview
+  ? shoppingCartFeaturedImage
+  : battleshipFeaturedImage;
+const featuredImageAlt = isShoppingCartPreview
+  ? "Screenshot of the Shopping Cart storefront interface"
+  : "Screenshot of the Battleship game interface";
 ---
 
 <section class="ui-featured-band relative left-1/2 right-1/2 -mx-[50vw] w-screen border-y py-16 md:py-20">
@@ -82,16 +92,24 @@ const { project } = Astro.props;
 
             <div class="featured-project-visual ui-featured-visual-surface relative aspect-4/3 overflow-hidden rounded-2xl border">
               <div class="featured-project-visual-glow absolute inset-0 bg-linear-to-br from-indigo-500/10 to-cyan-500/10"></div>
-              <Image
-                src={featuredProjectImage}
-                alt="Screenshot of the Battleship game interface"
-                class="featured-project-image h-full w-full object-cover"
-                widths={[546, 1092]}
-                sizes="(max-width: 768px) 100vw, 546px"
-                format="webp"
-                loading="lazy"
-                decoding="async"
-              />
+              {hasFeaturedPreview ? (
+                <Image
+                  src={featuredProjectImage}
+                  alt={featuredImageAlt}
+                  class="featured-project-image h-full w-full object-cover"
+                  widths={[546, 1092]}
+                  sizes="(max-width: 768px) 100vw, 546px"
+                  format="webp"
+                  loading="lazy"
+                  decoding="async"
+                />
+              ) : (
+                <div class="relative flex h-full w-full items-center justify-center p-6">
+                  <p class="text-center text-sm uppercase tracking-[0.22em] text-slate-400">
+                    Project preview available in repo and live demo
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </article>
