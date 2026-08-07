@@ -37,7 +37,7 @@ variable "apigw_throttling_rate_limit" {
 
 variable "lambda_runtime" {
   type    = string
-  default = "python3.12"
+  default = "python3.14"
 }
 
 variable "lambda_timeout" {

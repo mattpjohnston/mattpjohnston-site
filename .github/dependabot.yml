@@ -1,0 +1,25 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /apps/web
+    schedule:
+      interval: monthly
+
+  - package-ecosystem: pip
+    directory: /apps/api
+    schedule:
+      interval: monthly
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+
+  - package-ecosystem: terraform
+    directories:
+      - /infra/terraform/environments/prod
+      - /infra/terraform/modules/backend
+      - /infra/terraform/modules/frontend
+    schedule:
+      interval: monthly
