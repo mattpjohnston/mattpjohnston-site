@@ -1,0 +1,33 @@
+---
+import { getCollection } from "astro:content";
+import { nav } from "../site";
+
+// hide the writing link until there's actually a post
+const postCount = (await getCollection("blog")).length;
+const links = nav.filter((link) => link.path !== "/blog/" || postCount > 0);
+
+const normalize = (path: string) => (path !== "/" && path.endsWith("/") ? path.slice(0, -1) : path);
+const currentPath = normalize(Astro.url.pathname);
+const isActive = (path: string) => {
+	const target = normalize(path);
+	return currentPath === target || currentPath.startsWith(`${target}/`);
+};
+---
+
+<nav aria-label="Primary">
+	<ul class="flex items-baseline gap-5 font-sans text-[0.9375rem] md:gap-6">
+		{
+			links.map((link) => (
+				<li>
+					<a
+						href={link.path}
+						aria-current={isActive(link.path) ? "page" : undefined}
+						class:list={["plain", isActive(link.path) ? "text-ink" : "text-ink-muted"]}
+					>
+						{link.name}
+					</a>
+				</li>
+			))
+		}
+	</ul>
+</nav>

@@ -1,0 +1,91 @@
+---
+title: "This site's platform"
+summary: "A static site on S3 and CloudFront, a Python Lambda counting visitors into DynamoDB, and GitHub Actions deploying both. The infrastructure is described in Terraform."
+stack:
+  [
+    "Terraform",
+    "AWS",
+    "S3",
+    "CloudFront",
+    "Lambda",
+    "API Gateway",
+    "DynamoDB",
+    "Python",
+    "GitHub Actions",
+    "Astro",
+  ]
+repoUrl: "https://github.com/mattpjohnston/mattpjohnston-site"
+featured: true
+order: 1
+---
+
+The site itself is static and could have been hosted anywhere. I put it on AWS
+because my day job is on-prem,
+and I wanted more hands-on experience with the managed services I don't otherwise touch.
+A personal site is a good place to do that.
+
+Everything here is defined in Terraform in the same repository.
+
+## Hosting the pages
+
+The Astro build is synced to an S3 bucket with public access blocked. CloudFront
+sits in front of it and reaches the bucket through an Origin Access Control, and
+the bucket policy only allows reads from that one CloudFront distribution. Even if you find the bucket, you can't read from it.
+
+CloudFront handles TLS with a certificate from ACM, compresses responses, and
+returns `/404.html` with a 404 status for anything missing. There is also a
+small CloudFront Function that runs on each request and rewrites paths like
+`/projects/` to `/projects/index.html`, because S3 does not do that for you when
+the bucket is private.
+
+## The visitor counter
+
+The counter in the footer is the only part of the site that isn't static. It is
+a Python function on Lambda, behind an HTTP API Gateway, storing counts in
+DynamoDB.
+
+The obvious version of this counts page loads, so refreshing ten times adds ten.
+I wanted it to count a visitor once a day instead. Each request gets reduced to
+a fingerprint, taken from the source IP where API Gateway provides one, and that
+fingerprint is hashed along with today's date and a secret salt:
+
+```text
+seen#2026-08-06#sha256(2026-08-06:203.0.113.7:salt)
+```
+
+The function then tries to write that key to DynamoDB with a condition that it
+doesn't already exist. If the write goes through, this is the first request from
+that fingerprint today, so the count goes up. If DynamoDB rejects it with
+`ConditionalCheckFailed`, they have already been counted today and the function
+just reads the current total instead.
+
+The salt is there so the stored value can't be turned back into an IP address.
+Without it, hashing an IP is not much protection, because there aren't many
+addresses to try. The keys also carry an `expires_at` timestamp and the table
+has TTL switched on, so DynamoDB deletes each day's fingerprints on its own and
+the table doesn't grow forever.
+
+It is an approximation. People sharing a wi-fi connection count once between them, and a phone moving from wifi to mobile data counts twice. That seemed fine for a number in a footer.
+
+The Lambda runs on arm64, which is cheaper, and the frontend retries a few times
+if the first request fails, because a cold start can take long enough to time
+out.
+
+## Deploys
+
+Two GitHub Actions workflows, one for the site and one for the API. Each is
+filtered by path, so editing a page doesn't redeploy the Lambda. Neither holds
+an AWS key: they use OIDC to assume a deploy role, which was one of the more
+useful things I learned building this.
+
+The site is uploaded in two passes, with different cache headers:
+
+| Content       | Cache-Control                       |
+| ------------- | ----------------------------------- |
+| Hashed assets | `public,max-age=31536000,immutable` |
+| HTML          | `public,max-age=0,must-revalidate`  |
+
+Astro puts a hash of the contents into the filename of its CSS, fonts and
+images, so those files can be cached for a year. A change produces a new
+filename. HTML keeps the same URL every time, so it has to be revalidated,
+otherwise a deploy sits behind a cached copy until it expires.

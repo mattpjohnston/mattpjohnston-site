@@ -1,0 +1,58 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { site } from "../site";
+---
+
+<BaseLayout pageTitle="Home">
+	<section class="border-b border-rule py-14 md:py-20">
+		<h1 class="text-3xl md:text-4xl">{site.name}</h1>
+
+		<div class="mt-6 max-w-prose space-y-4 text-ink-muted">
+			<p>
+				I'm an IT infrastructure engineer in Northern Ireland, working across on-premises data
+				centres and cloud environments. Mostly Linux, virtualisation, storage and
+				databases.
+			</p>
+
+			<p>
+				I learned to program in my spare time through CS50x and CS61A, then learned
+				full-stack web development by building projects.
+			</p>
+
+			<p>
+				I've been messing about with computers and tech for as long as I can remember. As a
+				teenager I set up an RTL-SDR receiver and a homemade antenna and started tracking
+				aircraft via ADS-B, <a
+					href="https://www.flightaware.com/adsb/stats/user/matthewjohnston89"
+					>feeding data to FlightAware</a
+				> since 2017.
+			</p>
+
+			<p>
+				Outside work I enjoy <a href="https://vsco.co/mattpjohnston/gallery">photography</a
+				>, hiking, and travelling.
+			</p>
+		</div>
+	</section>
+
+	<section class="py-12 md:py-16">
+		<h2 class="text-xl md:text-2xl">This site</h2>
+
+		<div class="mt-5 max-w-prose space-y-4 text-ink-muted">
+			<p>
+				The pages are static, but the infrastructure behind them is described in Terraform.
+				An S3 bucket serves the build through CloudFront, and a Python Lambda behind API
+				Gateway records visits in DynamoDB. GitHub Actions deploys both.
+			</p>
+
+			<p>
+				I built it that way to get hands-on with the AWS services I don't use at work. The
+				visitor count in the footer is the part you can see working.
+			</p>
+		</div>
+
+		<p class="mt-6 font-sans text-[0.9375rem]">
+			<a href="/projects/">How it is put together</a>
+		</p>
+	</section>
+</BaseLayout>

@@ -1,0 +1,36 @@
+---
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+// only one project so far, so this page just renders it
+const projects = await getCollection("projects");
+const project = [...projects].sort((a, b) => a.data.order - b.data.order)[0];
+const { Content } = await render(project);
+---
+
+<BaseLayout pageTitle={project.data.title} pageDescription={project.data.summary}>
+	<article class="py-14 md:py-20">
+		<header class="border-b border-rule pb-8">
+			<h1 class="text-3xl md:text-4xl">{project.data.title}</h1>
+			<p class="mt-5 text-ink-muted">{project.data.summary}</p>
+
+			<ul class="stack-list mt-6 flex flex-wrap gap-x-3 gap-y-1">
+				{project.data.stack.map((item: string) => <li>{item}</li>)}
+			</ul>
+
+			{
+				project.data.repoUrl && (
+					<p class="mt-6 font-sans text-[0.9375rem]">
+						<a href={project.data.repoUrl} rel="noopener">
+							Source on GitHub
+						</a>
+					</p>
+				)
+			}
+		</header>
+
+		<div class="prose mt-10">
+			<Content />
+		</div>
+	</article>
+</BaseLayout>

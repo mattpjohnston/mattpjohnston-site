@@ -1,0 +1,67 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+
+interface Frontmatter {
+	title: string;
+	pubDate: Date;
+	description: string;
+	author: string;
+	image?: { url: string; alt: string };
+	tags: string[];
+}
+
+interface Props {
+	frontmatter: Frontmatter;
+	readingTimeMinutes?: number;
+}
+
+const { frontmatter, readingTimeMinutes = 1 } = Astro.props as Props;
+
+const publishedDate = new Intl.DateTimeFormat("en-GB", {
+	day: "numeric",
+	month: "long",
+	year: "numeric",
+}).format(frontmatter.pubDate);
+---
+
+<BaseLayout pageTitle={frontmatter.title} pageDescription={frontmatter.description}>
+	<article class="py-14 md:py-20">
+		<header class="border-b border-rule pb-8">
+			<h1 class="text-3xl md:text-4xl">{frontmatter.title}</h1>
+			<p class="mt-5 text-ink-muted">{frontmatter.description}</p>
+
+			<p class="mt-6 font-sans text-sm text-ink-faint">
+				<time datetime={frontmatter.pubDate.toISOString()}>{publishedDate}</time>
+				<span aria-hidden="true"> · </span>
+				{readingTimeMinutes} min read
+				{
+					frontmatter.tags.length > 0 && (
+						<>
+							<span aria-hidden="true"> · </span>
+							{frontmatter.tags.join(", ")}
+						</>
+					)
+				}
+			</p>
+		</header>
+
+		{
+			frontmatter.image && (
+				<img
+					src={frontmatter.image.url}
+					alt={frontmatter.image.alt}
+					class="mt-10 h-auto w-full border border-rule"
+					loading="eager"
+				/>
+			)
+		}
+
+		<div class="prose mt-10">
+			<slot />
+		</div>
+
+		<p class="mt-14 border-t border-rule pt-6 font-sans text-[0.9375rem]">
+			<a href="/blog/">Back to writing</a>
+		</p>
+	</article>
+</BaseLayout>

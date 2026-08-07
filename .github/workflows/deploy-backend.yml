@@ -1,0 +1,59 @@
+name: Deploy Backend
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "apps/api/**"
+      - ".github/workflows/deploy-backend.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: deploy-backend
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install test dependencies
+        working-directory: apps/api
+        run: pip install -r requirements-dev.txt
+
+      - name: Run API tests
+        working-directory: apps/api
+        run: pytest
+
+      - name: Validate required repo variables
+        run: test -n "${{ vars.BACKEND_LAMBDA_FUNCTION_NAME }}"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: eu-west-1
+
+      - name: Package Lambda source
+        working-directory: apps/api/lambda/src
+        run: zip -r /tmp/backend-lambda.zip .
+
+      - name: Update Lambda code
+        run: |
+          aws lambda update-function-code \
+            --function-name "${{ vars.BACKEND_LAMBDA_FUNCTION_NAME }}" \
+            --zip-file fileb:///tmp/backend-lambda.zip
+
+      - name: Wait for Lambda update
+        run: aws lambda wait function-updated --function-name "${{ vars.BACKEND_LAMBDA_FUNCTION_NAME }}"
